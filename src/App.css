@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.CustomAttr_Underline {
+  text-decoration: underline;
+}

@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
 
+// component declaration
 function App() {
+  var helloWorld = "Welcome to the Road to learn React";
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>{helloWorld}</h2>
+      <p className="CustomAttr_Underline">
+        {" "}
+        My own test with a custom css class
+      </p>
     </div>
   );
 }
 
+// component usage (also called instantiation for a class)
+// creates an instance of the component
 export default App;
