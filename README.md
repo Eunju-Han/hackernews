@@ -67,4 +67,10 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
 
-https://reactjs.org/docs/dom-elements.html
+### My OWN NOTE - EUNJU HAN
+
+## Supported HTML attributes in React's Doc
+
+DOM Elements: https://reactjs.org/docs/dom-elements.html
+
+- camelCase convention

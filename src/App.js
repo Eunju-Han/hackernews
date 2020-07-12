@@ -3,14 +3,17 @@ import "./App.css";
 
 // component declaration
 function App() {
-  var helloWorld = "Welcome to the Road to learn React";
+  const helloWorld = "Welcome to the Road to learn React";
+  const helloW = {
+    text: "Welcome to the Road to learn React"
+  };
+  helloW.text =
+    "When a const variable is an array or object, the values it holds can get updated through indirect";
+
   return (
     <div className="App">
       <h2>{helloWorld}</h2>
-      <p className="CustomAttr_Underline">
-        {" "}
-        My own test with a custom css class
-      </p>
+      <p className="CustomAttr_Underline">{helloW.text}</p>
     </div>
   );
 }
