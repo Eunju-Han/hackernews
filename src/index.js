@@ -21,3 +21,10 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+// Hot Module Replacement (HMR) is a tool
+// for reloading your application in the browser WITHOUT the PAGE REFRESH.
+// In a big application, it improves development productivity;
+if (module.hot) {
+  module.hot.accept();
+}
