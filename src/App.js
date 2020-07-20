@@ -27,9 +27,41 @@ class App extends Component {
     super(props); //mandatory
 
     this.state = {
-      list: list
+      // list: list
+      list
+    };
+
+    // *** NOTE START *** //
+    const name = "Robin";
+    const user = {
+      // name: name,   //ES5
+      name //ES6
+    };
+
+    // ES5
+    var userService_ES5 = {
+      getUserName: function(user) {
+        return user.firstname + " " + user.lastname;
+      }
+    };
+    // ES6
+    const userService_ES6 = {
+      getUserName(user) {
+        return user.firstname + " " + user.lastname;
+      }
+    };
+
+    //computed property names to allocate values by key in an object dynamically
+    // ES5
+    var user_ES5 = { name: "Robin" };
+    // ES6
+    const key = "name";
+    const user_ES6 = {
+      [key]: "Robin"
     };
   }
+
+  // *** NOTE END *** //
 
   render() {
     const helloWorld = "Welcome to the Road to learn React";
