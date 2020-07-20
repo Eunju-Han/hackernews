@@ -40,19 +40,17 @@ class App extends Component {
     return (
       <div className="App">
         <h2>{helloWorld}</h2>
-        {list.map(function(item) {
-          return (
-            <div key={item.objectID}>
-              {/* Make sure that the key attribute is a stable identifier. */}
-              <span>
-                <a href={item.url}>{item.title}</a>
-              </span>
-              <span>{item.author}</span>
-              <span>{item.num_comments}</span>
-              <span>{item.points}</span>
-            </div>
-          );
-        })}
+        {list.map(item => (
+          <div key={item.objectID}>
+            {/* Make sure that the key attribute is a stable identifier. */}
+            <span>
+              <a href={item.url}>{item.title}</a>
+            </span>
+            <span>{item.author}</span>
+            <span>{item.num_comments}</span>
+            <span>{item.points}</span>
+          </div>
+        ))}
       </div>
     );
   }
