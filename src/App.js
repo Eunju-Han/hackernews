@@ -23,6 +23,14 @@ const list = [
 
 // component declaration
 class App extends Component {
+  constructor(props) {
+    super(props); //mandatory
+
+    this.state = {
+      list: list
+    };
+  }
+
   render() {
     const helloWorld = "Welcome to the Road to learn React";
     const helloW = {
@@ -40,7 +48,7 @@ class App extends Component {
     return (
       <div className="App">
         <h2>{helloWorld}</h2>
-        {list.map(item => (
+        {this.state.list.map(item => (
           <div key={item.objectID}>
             {/* Make sure that the key attribute is a stable identifier. */}
             <span>
