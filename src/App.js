@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./App.css";
-import { render } from "@testing-library/react";
 
 const list = [
   {
@@ -31,37 +30,42 @@ class App extends Component {
       list
     };
 
-    // *** NOTE START *** //
-    const name = "Robin";
-    const user = {
-      // name: name,   //ES5
-      name //ES6
-    };
-
-    // ES5
-    var userService_ES5 = {
-      getUserName: function(user) {
-        return user.firstname + " " + user.lastname;
-      }
-    };
-    // ES6
-    const userService_ES6 = {
-      getUserName(user) {
-        return user.firstname + " " + user.lastname;
-      }
-    };
-
-    //computed property names to allocate values by key in an object dynamically
-    // ES5
-    var user_ES5 = { name: "Robin" };
-    // ES6
-    const key = "name";
-    const user_ES6 = {
-      [key]: "Robin"
-    };
+    this.onDismiss = this.onDismiss.bind(this);
   }
 
-  // *** NOTE END *** //
+  //the objective is to remove the item identified by the id from the list and store an updated list to the local state
+  // // 1
+  // onDismiss(id) {
+  //   //immutable data structures
+  //   const updatedList = this.state.list.filter(function isNotId(item) {
+  //     return item.objectID !== id;
+  //   });
+  //   this.setState({ list: updatedList });
+  // }
+
+  //2. extract the function and pass it to the filter function:
+  // onDismiss(id) {
+  //   function isNotId(item) {
+  //     return item.objectID !== id;
+  //   }
+  //   const updatedList = this.state.list.filter(isNotId);
+  //   this.setState({ list: updatedList });
+  // }
+
+  //3. JavaScript ES6 arrow function
+  // onDismiss(id) {
+  //   const lsNotId = item => item.objectID !== id;
+  //   const updatedList = this.state.list.filter(lsNotId);
+
+  //   this.setState({ list: updatedList });
+  // }
+
+  // 4. inline
+  onDismiss(id) {
+    const updatedList = this.state.list.filter(item => item.objectID !== id);
+
+    this.setState({ list: updatedList });
+  }
 
   render() {
     const helloWorld = "Welcome to the Road to learn React";
@@ -89,6 +93,14 @@ class App extends Component {
             <span>{item.author}</span>
             <span>{item.num_comments}</span>
             <span>{item.points}</span>
+            <span>
+              <button
+                onClick={() => this.onDismiss(item.objectID)}
+                type="button"
+              >
+                Dismiss
+              </button>
+            </span>
           </div>
         ))}
       </div>
