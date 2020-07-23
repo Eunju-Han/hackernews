@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
+import Counter from "./ExplainBindingsComponent";
 
 // ReactDOM.render()
 // - uses a DOM node in your HTML to replace it with JSX.
@@ -17,7 +18,8 @@ import App from "./App";
 // second: the place where the React application hooks into your HTML
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* <App /> */}
+    <Counter />
   </React.StrictMode>,
   document.getElementById("root")
 );
