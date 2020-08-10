@@ -18,8 +18,7 @@ import Counter from "./ExplainBindingsComponent";
 // second: the place where the React application hooks into your HTML
 ReactDOM.render(
   <React.StrictMode>
-    {/* <App /> */}
-    <Counter />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );
