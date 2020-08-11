@@ -105,13 +105,14 @@ class App extends Component {
     // });
     // console.log(newArray);
 
+    const { list, searchTerm } = this.state;
     return (
       <div className="App">
         <h2>{helloWorld}</h2>
         <form>
           <input type="text" onChange={this.onSearchChange} />
         </form>
-        {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
+        {list.filter(isSearched(searchTerm)).map(item => {
           const onHandleDismiss = () => this.onDismiss(item.objectID);
 
           return (
