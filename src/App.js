@@ -20,6 +20,25 @@ const list = [
   }
 ];
 
+//high-order functions: functions that return functions to pass information.
+function isSearched_f(searchTerm) {
+  return function(item) {
+    //condition returning true or false
+    return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+  };
+}
+
+//ES5
+function isSearched_ES5(searchTerm) {
+  return function(item) {
+    return item.title.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
+  };
+}
+
+//ES6
+const isSearched = searchTerm => item =>
+  item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
 // component declaration
 class App extends Component {
   constructor(props) {
@@ -27,12 +46,17 @@ class App extends Component {
 
     this.state = {
       // list: list
-      list
+      list,
+      searchTerm: ""
     };
 
+    this.onSearchChange = this.onSearchChange.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
   }
 
+  onSearchChange(event) {
+    this.setState({ searchTerm: event.target.value });
+  }
   //the objective is to remove the item identified by the id from the list and store an updated list to the local state
   // // 1
   // onDismiss(id) {
@@ -84,7 +108,10 @@ class App extends Component {
     return (
       <div className="App">
         <h2>{helloWorld}</h2>
-        {this.state.list.map(item => {
+        <form>
+          <input type="text" onChange={this.onSearchChange} />
+        </form>
+        {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
           const onHandleDismiss = () => this.onDismiss(item.objectID);
 
           return (
