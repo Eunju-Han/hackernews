@@ -110,7 +110,13 @@ class App extends Component {
       <div className="App">
         <h2>{helloWorld}</h2>
         <form>
-          <input type="text" onChange={this.onSearchChange} />
+          <input
+            type="text"
+            // Form elements such as <input>, <textarea>, and <select> hold their own state in plain HTML.
+            // value property is to make controlled component by holding searchTerm
+            value={searchTerm}
+            onChange={this.onSearchChange}
+          />
         </form>
         {list.filter(isSearched(searchTerm)).map(item => {
           const onHandleDismiss = () => this.onDismiss(item.objectID);
