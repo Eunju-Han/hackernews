@@ -109,18 +109,34 @@ class App extends Component {
     return (
       <div className="App">
         <h2>{helloWorld}</h2>
-        <form>
-          <input
-            type="text"
-            // Form elements such as <input>, <textarea>, and <select> hold their own state in plain HTML.
-            // value property is to make controlled component by holding searchTerm
-            value={searchTerm}
-            onChange={this.onSearchChange}
-          />
-        </form>
-        {list.filter(isSearched(searchTerm)).map(item => {
-          const onHandleDismiss = () => this.onDismiss(item.objectID);
+        <Search value={searchTerm} onChange={this.onSearchChange} />
+        <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
+      </div>
+    );
+  }
+}
 
+// component usage (also called instantiation for a class)
+// creates an instance of the component
+export default App;
+
+class Search extends Component {
+  render() {
+    const { value, onChange } = this.props;
+    return (
+      <form>
+        <input type="text" value={value} onChange={onChange} />
+      </form>
+    );
+  }
+}
+
+class Table extends Component {
+  render() {
+    const { list, pattern, onDismiss } = this.props;
+    return (
+      <div>
+        {list.filter(isSearched(pattern)).map(item => {
           return (
             <div key={item.objectID}>
               {/* Make sure that the key attribute is a stable identifier. */}
@@ -131,7 +147,7 @@ class App extends Component {
               <span>{item.num_comments}</span>
               <span>{item.points}</span>
               <span>
-                <button onClick={onHandleDismiss} type="button">
+                <button onClick={() => onDismiss(item.objectID)} type="button">
                   Dismiss
                 </button>
               </span>
@@ -142,7 +158,3 @@ class App extends Component {
     );
   }
 }
-
-// component usage (also called instantiation for a class)
-// creates an instance of the component
-export default App;
