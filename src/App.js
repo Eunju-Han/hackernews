@@ -78,9 +78,20 @@ class App extends Component {
 
   // 4. inline
   onDismiss(id) {
-    const updatedList = this.state.list.filter(item => item.objectID !== id);
+    // const updatedList = this.state.list.filter(item => item.objectID !== id);
 
-    this.setState({ list: updatedList });
+    // this.setState({ list: updatedList });
+
+    const isNotId = item => item.objectID !== id;
+    const updatedHits = this.state.result.hits.filter(isNotId);
+    this.setState({
+      // Object.assign(target object, source object, source ojbect)
+      // source objects are merge into the target obj
+      // result: Object.assign({}, this.state.result, { hits: updatedHits })
+
+      //spread operator
+      result: { ...this.state.result, hits: updatedHits }
+    });
   }
 
   render() {
