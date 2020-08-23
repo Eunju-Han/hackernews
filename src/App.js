@@ -110,11 +110,22 @@ class App extends Component {
             Search
           </Search>
         </div>
-        <Table
-          list={result.hits}
-          pattern={searchTerm}
-          onDismiss={this.onDismiss}
-        />
+        {/* Conditional Rendering */}
+        {/* ternary operator */}
+        {/* {result ? (
+          <Table
+            list={result.hits}
+            pattern={searchTerm}
+            onDismiss={this.onDismiss}
+          />
+        ) : null} */}
+        {result && (
+          <Table
+            list={result.hits}
+            pattern={searchTerm}
+            onDismiss={this.onDismiss}
+          />
+        )}
       </div>
     );
   }
