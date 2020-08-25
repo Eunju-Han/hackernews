@@ -9,9 +9,9 @@ const PATH_BASE = "https://hn.algolia.com/api/v1";
 const PATH_SEARCH = "/search";
 const PARAM_SEARCH = "query=";
 
-//ES6
-const isSearched = searchTerm => item =>
-  item.title.toLowerCase().includes(searchTerm.toLowerCase());
+// //ES6
+// const isSearched = searchTerm => item =>
+//   item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 const largeColumn = { width: "40%" };
 const midColumn = { width: "30%" };
@@ -28,7 +28,9 @@ class App extends Component {
     };
 
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
+    this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
+    this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
   }
 
@@ -36,17 +38,26 @@ class App extends Component {
     this.setState({ result });
   }
 
-  componentDidMount() {
-    const { searchTerm } = this.state;
-
+  fetchSearchTopStories(searchTerm) {
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
       .catch(error => error);
   }
 
+  componentDidMount() {
+    const { searchTerm } = this.state;
+    this.fetchSearchTopStories(searchTerm);
+  }
+
   onSearchChange(event) {
     this.setState({ searchTerm: event.target.value });
+  }
+
+  onSearchSubmit(event) {
+    const { searchTerm } = this.state;
+    this.fetchSearchTopStories(searchTerm);
+    event.preventDefault();
   }
 
   //the objective is to remove the item identified by the id from the list and store an updated list to the local state
@@ -106,7 +117,11 @@ class App extends Component {
       <div className="page">
         <div className="interactions">
           <h2>{helloWorld}</h2>
-          <Search value={searchTerm} onChange={this.onSearchChange}>
+          <Search
+            value={searchTerm}
+            onChange={this.onSearchChange}
+            onSubmit={this.onSearchSubmit}
+          >
             Search
           </Search>
         </div>
@@ -119,13 +134,7 @@ class App extends Component {
             onDismiss={this.onDismiss}
           />
         ) : null} */}
-        {result && (
-          <Table
-            list={result.hits}
-            pattern={searchTerm}
-            onDismiss={this.onDismiss}
-          />
-        )}
+        {result && <Table list={result.hits} onDismiss={this.onDismiss} />}
       </div>
     );
   }
@@ -135,12 +144,13 @@ class App extends Component {
 // creates an instance of the component
 export default App;
 
-const Search = ({ value, onChange, children }) => {
+const Search = ({ value, onChange, onSubmit, children }) => {
   // do something
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       {children}
       <input type="text" value={value} onChange={onChange} />
+      <button type="submit"> {children}</button>
     </form>
   );
 };
@@ -153,7 +163,9 @@ const Table = ({ list, pattern, onDismiss }) => (
       <span style={smallColumn}>Comments</span>
       <span style={smallColumn}>Points</span>
     </div>
-    {list.filter(isSearched(pattern)).map(item => (
+
+    {/* {list.filter(isSearched(pattern)).map(item => ( */}
+    {list.map(item => (
       <div key={item.objectID} className="table-row">
         {/* Make sure that the key attribute is a stable identifier. */}
         <span style={largeColumn}>
