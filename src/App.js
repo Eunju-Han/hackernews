@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+// performs asynchronous requests to remote APIs
+import axios from "axios";
 import "./App.css";
-import { func } from "prop-types";
 
 //default parameters to break the URL endpoint
 const DEFAULT_QUERY = "redux";
@@ -62,11 +63,10 @@ class App extends Component {
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
-    fetch(
+    axios(
       `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
     )
-      .then(response => response.json())
-      .then(result => this.setSearchTopStories(result))
+      .then(result => this.setSearchTopStories(result.data))
       .catch(error => this.setState({ error }));
   }
 
