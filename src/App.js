@@ -28,7 +28,8 @@ class App extends Component {
     this.state = {
       results: null,
       searchKey: "",
-      searchTerm: DEFAULT_QUERY
+      searchTerm: DEFAULT_QUERY,
+      error: null
     };
 
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
@@ -46,14 +47,13 @@ class App extends Component {
   setSearchTopStories(result) {
     const { hits, page } = result;
     const { searchKey, results } = this.state;
-    // const oldHits = page !== 0 ? this.state.result.hits : [];
+
     const oldHits =
       results && results[searchKey] ? results[searchKey].hits : [];
 
     const updatedHits = [...oldHits, ...hits];
 
     this.setState({
-      // result: { hits: updatedHits, page }
       results: {
         ...results,
         [searchKey]: { hits: updatedHits, page }
@@ -67,7 +67,7 @@ class App extends Component {
     )
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
-      .catch(error => error);
+      .catch(error => this.setState({ error }));
   }
 
   componentDidMount() {
@@ -89,59 +89,21 @@ class App extends Component {
     event.preventDefault();
   }
 
-  //the objective is to remove the item identified by the id from the list and store an updated list to the local state
-  // // 1
-  // onDismiss(id) {
-  //   //immutable data structures
-  //   const updatedList = this.state.list.filter(function isNotId(item) {
-  //     return item.objectID !== id;
-  //   });
-  //   this.setState({ list: updatedList });
-  // }
-
-  //2. extract the function and pass it to the filter function:
-  // onDismiss(id) {
-  //   function isNotId(item) {
-  //     return item.objectID !== id;
-  //   }
-  //   const updatedList = this.state.list.filter(isNotId);
-  //   this.setState({ list: updatedList });
-  // }
-
-  //3. JavaScript ES6 arrow function
-  // onDismiss(id) {
-  //   const lsNotId = item => item.objectID !== id;
-  //   const updatedList = this.state.list.filter(lsNotId);
-
-  //   this.setState({ list: updatedList });
-  // }
-
-  // 4. inline
   onDismiss(id) {
-    // const updatedList = this.state.list.filter(item => item.objectID !== id);
-
-    // this.setState({ list: updatedList });
-
     const { searchKey, results } = this.state;
     const { hits, page } = results[searchKey];
 
     const isNotId = item => item.objectID !== id;
-    // const updatedHits = this.state.result.hits.filter(isNotId);
     const updatedHits = hits.filter(isNotId);
-    this.setState({
-      // Object.assign(target object, source object, source ojbect)
-      // source objects are merge into the target obj
-      // result: Object.assign({}, this.state.result, { hits: updatedHits })
 
-      //spread operator
-      // result: { ...this.state.result, hits: updatedHits }
+    this.setState({
       results: { ...results, [searchKey]: { hits: updatedHits, page } }
     });
   }
 
   render() {
     const helloWorld = "Welcome to the Road to learn React";
-    const { results, searchTerm, searchKey } = this.state;
+    const { results, searchTerm, searchKey, error } = this.state;
     const page =
       (results && results[searchKey] && results[searchKey].page) || 0;
 
@@ -163,16 +125,13 @@ class App extends Component {
             Search
           </Search>
         </div>
-        {/* Conditional Rendering */}
-        {/* ternary operator */}
-        {/* {result ? (
-          <Table
-            list={result.hits}
-            pattern={searchTerm}
-            onDismiss={this.onDismiss}
-          />
-        ) : null} */}
-        <Table list={list} onDismiss={this.onDismiss} />
+        {error ? (
+          <div className="interactions">
+            <p>Something went wrong.</p>
+          </div>
+        ) : (
+          <Table list={list} onDismiss={this.onDismiss} />
+        )}
         <div className="interactions">
           <Button
             onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
