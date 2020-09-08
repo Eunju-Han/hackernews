@@ -13,15 +13,10 @@ const PARAM_SEARCH = "query=";
 const PARAM_PAGE = "page=";
 const PARAM_HPP = "hitsPerPage=";
 
-// //ES6
-// const isSearched = searchTerm => item =>
-//   item.title.toLowerCase().includes(searchTerm.toLowerCase());
-
 const largeColumn = { width: "40%" };
 const midColumn = { width: "30%" };
 const smallColumn = { width: "10%" };
 
-// component declaration
 class App extends Component {
   constructor(props) {
     super(props); //mandatory
@@ -33,6 +28,7 @@ class App extends Component {
       error: null
     };
 
+    //events bidings
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
@@ -45,6 +41,7 @@ class App extends Component {
     console.log(!this.state.results[searchTerm]);
     return !this.state.results[searchTerm];
   }
+
   setSearchTopStories(result) {
     const { hits, page } = result;
     const { searchKey, results } = this.state;
@@ -101,6 +98,7 @@ class App extends Component {
     });
   }
 
+  //Search, Table, More button
   render() {
     const helloWorld = "Welcome to the Road to learn React";
     const { results, searchTerm, searchKey, error } = this.state;
@@ -109,9 +107,6 @@ class App extends Component {
 
     const list =
       (results && results[searchKey] && results[searchKey].hits) || [];
-    // if (!result) {
-    //   return null;
-    // }
 
     return (
       <div className="page">
@@ -144,7 +139,6 @@ class App extends Component {
   }
 }
 
-// component usage (also called instantiation for a class)
 // creates an instance of the component
 export default App;
 
@@ -168,7 +162,6 @@ const Table = ({ list, pattern, onDismiss }) => (
       <span style={smallColumn}>Points</span>
     </div>
 
-    {/* {list.filter(isSearched(pattern)).map(item => ( */}
     {list.map(item => (
       <div key={item.objectID} className="table-row">
         {/* Make sure that the key attribute is a stable identifier. */}
