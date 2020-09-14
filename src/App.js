@@ -189,3 +189,5 @@ const Button = ({ onClick, className = "", children }) => (
     {children}
   </button>
 );
+
+export { Search, Table, Button };
