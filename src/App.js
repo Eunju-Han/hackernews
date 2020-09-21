@@ -2,6 +2,7 @@ import React, { Component } from "react";
 // performs asynchronous requests to remote APIs
 import axios from "axios";
 import "./App.css";
+import PropTypes, { shape } from "prop-types";
 
 //default parameters to break the URL endpoint
 const DEFAULT_QUERY = "redux";
@@ -184,10 +185,33 @@ const Table = ({ list, pattern, onDismiss }) => (
   </div>
 );
 
-const Button = ({ onClick, className = "", children }) => (
+Table.propTypes = {
+  list: PropTypes.arrayOf(
+    PropTypes.shape({
+      objectID: PropTypes.string.isRequired,
+      author: PropTypes.string,
+      url: PropTypes.string,
+      num_comments: PropTypes.number,
+      points: PropTypes.number
+    })
+  ).isRequired,
+  onDismiss: PropTypes.func.isRequired
+};
+
+const Button = ({ onClick, className, children }) => (
   <button onClick={onClick} className={className} type="button">
     {children}
   </button>
 );
+
+Button.defualtProps = {
+  className: ""
+};
+
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  chidren: PropTypes.node
+};
 
 export { Search, Table, Button };
