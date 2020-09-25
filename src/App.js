@@ -2,7 +2,7 @@ import React, { Component } from "react";
 // performs asynchronous requests to remote APIs
 import axios from "axios";
 import "./App.css";
-import PropTypes, { shape } from "prop-types";
+import PropTypes from "prop-types";
 
 //default parameters to break the URL endpoint
 const DEFAULT_QUERY = "redux";
@@ -56,14 +56,15 @@ class App extends Component {
     this.setState({
       results: {
         ...results,
-        [searchKey]: { hits: updatedHits, page },
-        isLoading: false
-      }
+        [searchKey]: { hits: updatedHits, page }
+      },
+      isLoading: false
     });
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
     this.setState({ isLoading: true });
+
     axios(
       `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
     )
@@ -132,23 +133,17 @@ class App extends Component {
           <Table list={list} onDismiss={this.onDismiss} />
         )}
         <div className="interactions">
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <Button
-              onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
-            >
-              More
-            </Button>
-          )}
+          <ButtonWithLoading
+            isLoading={isLoading}
+            onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
+          >
+            More
+          </ButtonWithLoading>
         </div>
       </div>
     );
   }
 }
-
-// creates an instance of the component
-export default App;
 
 class Search extends Component {
   componentDidMount() {
@@ -234,6 +229,28 @@ Button.propTypes = {
   chidren: PropTypes.node
 };
 
-export { Search, Table, Button };
+const Loading = () => <div>Loading ...</div>;
 
-const Loading = () => <div>Loading...</div>;
+const withLoading = Component => ({ isLoading, ...rest }) =>
+  isLoading ? <Loading /> : <Component {...rest} />;
+
+const ButtonWithLoading = withLoading(Button);
+
+// // HOC (Higher-Order Components)
+// // multiple purposes:
+// // improved reusability of components,
+// // greater abstraction,
+// // composability of components,
+// // and manipulations of props, state and view
+
+// function withFeature(Component) {
+//   return function(props) {
+//     return <Component {...props} />;
+//   };
+// }
+// const withEnhancement = Component => props => <Component {...props} />;
+
+// creates an instance of the component
+export default App;
+
+export { Search, Table, Button };
