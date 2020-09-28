@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 // performs asynchronous requests to remote APIs
 import axios from "axios";
+import { sortBy } from "lodash";
+import classNames from "classnames";
 import "./App.css";
 import PropTypes from "prop-types";
 
@@ -18,6 +20,14 @@ const largeColumn = { width: "40%" };
 const midColumn = { width: "30%" };
 const smallColumn = { width: "10%" };
 
+const SORTS = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, "title"),
+  AUTHOR: list => sortBy(list, "author"),
+  COMMENTS: list => sortBy(list, "num_comments").reverse(),
+  POINTS: list => sortBy(list, "points").reverse()
+};
+
 class App extends Component {
   constructor(props) {
     super(props); //mandatory
@@ -27,7 +37,9 @@ class App extends Component {
       searchKey: "",
       searchTerm: DEFAULT_QUERY,
       error: null,
-      isLoading: false
+      isLoading: false,
+      sortKey: "NONE",
+      isSortReverse: false
     };
 
     //events bidings
@@ -37,6 +49,7 @@ class App extends Component {
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
+    this.onSort = this.onSort.bind(this);
   }
 
   needsToSearchTopStories(searchTerm) {
@@ -103,10 +116,24 @@ class App extends Component {
     });
   }
 
+  onSort(sortKey) {
+    const isSortReverse =
+      this.state.sortKey === sortKey && !this.state.isSortReverse;
+    this.setState({ sortKey, isSortReverse });
+  }
+
   //Search, Table, More button
   render() {
     const helloWorld = "Welcome to the Road to learn React";
-    const { results, searchTerm, searchKey, error, isLoading } = this.state;
+    const {
+      results,
+      searchTerm,
+      searchKey,
+      error,
+      isLoading,
+      sortKey,
+      isSortReverse
+    } = this.state;
     const page =
       (results && results[searchKey] && results[searchKey].page) || 0;
 
@@ -130,7 +157,13 @@ class App extends Component {
             <p>Something went wrong.</p>
           </div>
         ) : (
-          <Table list={list} onDismiss={this.onDismiss} />
+          <Table
+            list={list}
+            sortKey={sortKey}
+            isSortReverse={isSortReverse}
+            onSort={this.onSort}
+            onDismiss={this.onDismiss}
+          />
         )}
         <div className="interactions">
           <ButtonWithLoading
@@ -169,36 +202,104 @@ class Search extends Component {
   }
 }
 
-const Table = ({ list, pattern, onDismiss }) => (
-  <div className="table">
-    <div className="table-row">
-      <span style={largeColumn}>Title</span>
-      <span style={midColumn}>Author</span>
-      <span style={smallColumn}>Comments</span>
-      <span style={smallColumn}>Points</span>
-    </div>
+// const Table = ({ list, sortKey, isSortReverse, onSort, onDismiss }) => (
+//   <div className="table">
+//     <div className="table-header">
+//       <span style={largeColumn}>
+//         <Sort sortKey={"TITLE"} onSort={onSort}>
+//           Title
+//         </Sort>
+//       </span>
+//       <span style={midColumn}>
+//         <Sort sortKey={"AUTHOR"} onSort={onSort}>
+//           Author
+//         </Sort>
+//       </span>
+//       <span style={smallColumn}>
+//         <Sort sortKey={"COMMENTS"} onSort={onSort}>
+//           Comments
+//         </Sort>
+//       </span>
+//       <span style={smallColumn}>
+//         <Sort sortKey={"POINTS"} onSort={onSort}>
+//           Points
+//         </Sort>
+//       </span>
+//       <span style={{ width: "10%" }}>Archive</span>
+//     </div>
+//     {SORTS[sortKey](list).map(item => (
+//       <div key={item.objectID} className="table-row">
+//         {/* Make sure that the key attribute is a stable identifier. */}
+//         <span style={largeColumn}>
+//           <a href={item.url}>{item.title}</a>
+//         </span>
+//         <span style={midColumn}>{item.author}</span>
+//         <span style={smallColumn}>{item.num_comments}</span>
+//         <span style={smallColumn}>{item.points}</span>
+//         <span>
+//           <Button
+//             onClick={() => onDismiss(item.objectID)}
+//             className="button-inline"
+//           >
+//             Dismiss
+//           </Button>
+//         </span>
+//       </div>
+//     ))}
+//   </div>
+// );
 
-    {list.map(item => (
-      <div key={item.objectID} className="table-row">
-        {/* Make sure that the key attribute is a stable identifier. */}
+const Table = ({ list, sortKey, isSortReverse, onSort, onDismiss }) => {
+  const sortedList = SORTS[sortKey](list);
+  const reverseSortedList = isSortReverse ? sortedList.reverse() : sortedList;
+
+  return (
+    <div className="table">
+      <div className="table-header">
         <span style={largeColumn}>
-          <a href={item.url}>{item.title}</a>
+          <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
+            Title
+          </Sort>
         </span>
-        <span style={midColumn}>{item.author}</span>
-        <span style={smallColumn}>{item.num_comments}</span>
-        <span style={smallColumn}>{item.points}</span>
-        <span>
-          <Button
-            onClick={() => onDismiss(item.objectID)}
-            className="button-inline"
-          >
-            Dismiss
-          </Button>
+        <span style={midColumn}>
+          <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
+            Author
+          </Sort>
         </span>
+        <span style={smallColumn}>
+          <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
+            Comments
+          </Sort>
+        </span>
+        <span style={smallColumn}>
+          <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
+            Points
+          </Sort>
+        </span>
+        <span style={{ width: "10%" }}>Archive</span>
       </div>
-    ))}
-  </div>
-);
+      {reverseSortedList.map(item => (
+        <div key={item.objectID} className="table-row">
+          {/* Make sure that the key attribute is a stable identifier. */}
+          <span style={largeColumn}>
+            <a href={item.url}>{item.title}</a>
+          </span>
+          <span style={midColumn}>{item.author}</span>
+          <span style={smallColumn}>{item.num_comments}</span>
+          <span style={smallColumn}>{item.points}</span>
+          <span>
+            <Button
+              onClick={() => onDismiss(item.objectID)}
+              className="button-inline"
+            >
+              Dismiss
+            </Button>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 Table.propTypes = {
   list: PropTypes.arrayOf(
@@ -211,6 +312,27 @@ Table.propTypes = {
     })
   ).isRequired,
   onDismiss: PropTypes.func.isRequired
+};
+
+const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
+  // const sortClass = ["button-inline"];
+  const sortClass = classNames("button-inline", {
+    "button-active": sortKey === activeSortKey
+  });
+
+  // if (sortKey === activeSortKey) {
+  //   sortClass.push("button-active");
+  // }
+
+  return (
+    <Button
+      onClick={() => onSort(sortKey)}
+      // className={sortClass.join(" ")}
+      className={sortClass}
+    >
+      {children}
+    </Button>
+  );
 };
 
 const Button = ({ onClick, className, children }) => (

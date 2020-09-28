@@ -77,6 +77,8 @@ describe("Table", () => {
         objectID: "z"
       }
     ],
+    sortKey: 'TITLE',
+    isSortReverse: false;
     onDismiss: () => {}
   };
 
