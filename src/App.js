@@ -28,6 +28,22 @@ const SORTS = {
   POINTS: list => sortBy(list, "points").reverse()
 };
 
+const updateSearchTopStoriesState = (hits, page) => prevState => {
+  const { searchKey, results } = prevState;
+
+  const oldHits = results && results[searchKey] ? results[searchKey].hits : [];
+
+  const updatedHits = [...oldHits, ...hits];
+
+  return {
+    results: {
+      ...results,
+      [searchKey]: { hits: updatedHits, page }
+    },
+    isLoading: false
+  };
+};
+
 class App extends Component {
   constructor(props) {
     super(props); //mandatory
@@ -56,20 +72,17 @@ class App extends Component {
 
   setSearchTopStories(result) {
     const { hits, page } = result;
-    const { searchKey, results } = this.state;
+    // const { searchKey, results } = this.state;
 
-    const oldHits =
-      results && results[searchKey] ? results[searchKey].hits : [];
+    // this.setState({
+    //   results: {
+    //     ...results,
+    //     [searchKey]: { hits: updatedHits, page }
+    //   },
+    //   isLoading: false
+    // });
 
-    const updatedHits = [...oldHits, ...hits];
-
-    this.setState({
-      results: {
-        ...results,
-        [searchKey]: { hits: updatedHits, page }
-      },
-      isLoading: false
-    });
+    this.setState(updateSearchTopStoriesState(hits, page));
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
@@ -186,105 +199,6 @@ class Search extends Component {
     );
   }
 }
-
-// const Table = ({ list, sortKey, isSortReverse, onSort, onDismiss }) => (
-//   <div className="table">
-//     <div className="table-header">
-//       <span style={largeColumn}>
-//         <Sort sortKey={"TITLE"} onSort={onSort}>
-//           Title
-//         </Sort>
-//       </span>
-//       <span style={midColumn}>
-//         <Sort sortKey={"AUTHOR"} onSort={onSort}>
-//           Author
-//         </Sort>
-//       </span>
-//       <span style={smallColumn}>
-//         <Sort sortKey={"COMMENTS"} onSort={onSort}>
-//           Comments
-//         </Sort>
-//       </span>
-//       <span style={smallColumn}>
-//         <Sort sortKey={"POINTS"} onSort={onSort}>
-//           Points
-//         </Sort>
-//       </span>
-//       <span style={{ width: "10%" }}>Archive</span>
-//     </div>
-//     {SORTS[sortKey](list).map(item => (
-//       <div key={item.objectID} className="table-row">
-//         {/* Make sure that the key attribute is a stable identifier. */}
-//         <span style={largeColumn}>
-//           <a href={item.url}>{item.title}</a>
-//         </span>
-//         <span style={midColumn}>{item.author}</span>
-//         <span style={smallColumn}>{item.num_comments}</span>
-//         <span style={smallColumn}>{item.points}</span>
-//         <span>
-//           <Button
-//             onClick={() => onDismiss(item.objectID)}
-//             className="button-inline"
-//           >
-//             Dismiss
-//           </Button>
-//         </span>
-//       </div>
-//     ))}
-//   </div>
-// );
-
-// const Table = ({ list, sortKey, isSortReverse, onSort, onDismiss }) => {
-//   const sortedList = SORTS[sortKey](list);
-//   const reverseSortedList = isSortReverse ? sortedList.reverse() : sortedList;
-
-//   return (
-//     <div className="table">
-//       <div className="table-header">
-//         <span style={largeColumn}>
-//           <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
-//             Title
-//           </Sort>
-//         </span>
-//         <span style={midColumn}>
-//           <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
-//             Author
-//           </Sort>
-//         </span>
-//         <span style={smallColumn}>
-//           <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
-//             Comments
-//           </Sort>
-//         </span>
-//         <span style={smallColumn}>
-//           <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
-//             Points
-//           </Sort>
-//         </span>
-//         <span style={{ width: "10%" }}>Archive</span>
-//       </div>
-//       {reverseSortedList.map(item => (
-//         <div key={item.objectID} className="table-row">
-//           {/* Make sure that the key attribute is a stable identifier. */}
-//           <span style={largeColumn}>
-//             <a href={item.url}>{item.title}</a>
-//           </span>
-//           <span style={midColumn}>{item.author}</span>
-//           <span style={smallColumn}>{item.num_comments}</span>
-//           <span style={smallColumn}>{item.points}</span>
-//           <span>
-//             <Button
-//               onClick={() => onDismiss(item.objectID)}
-//               className="button-inline"
-//             >
-//               Dismiss
-//             </Button>
-//           </span>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
 
 class Table extends Component {
   constructor(props) {
